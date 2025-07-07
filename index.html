@@ -2,73 +2,44 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Telegram WebApp Test</title>
+  <title>Chat ID Debug</title>
   <style>
     body {
-      font-family: sans-serif;
       background: #111;
-      color: #fff;
+      color: white;
+      font-family: sans-serif;
       padding: 2em;
     }
-    h2 { margin-top: 0; }
     .ok { color: #0f0; }
     .fail { color: #f00; }
-    pre {
-      background: #222;
-      padding: 1em;
-      border-radius: 8px;
-      overflow-x: auto;
-    }
   </style>
 </head>
 <body>
-  <h2>🧪 Telegram WebApp Debug</h2>
-
-  <ul>
-    <li><b>Chat ID:</b> <span id="chat_id" class="fail">❌ Niet gevonden</span></li>
-    <li><b>Telegram ID:</b> <span id="tgid" class="fail">❌ Niet gevonden</span></li>
-    <li><b>Username:</b> <span id="username" class="fail">❌ Niet gevonden</span></li>
-    <li><b>Voornaam:</b> <span id="first_name" class="fail">❌ Niet gevonden</span></li>
-    <li><b>Achternaam:</b> <span id="last_name" class="fail">❌ Niet gevonden</span></li>
-  </ul>
-
-  <pre id="debug"></pre>
+  <h2>📡 Chat ID Test</h2>
+  <p><b>Chat ID:</b> <span id="chat_id">⏳ Bezig met uitlezen...</span></p>
 
   <script>
     window.onload = () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const chatId = urlParams.get("chat_id");
+      const raw = urlParams.get("startapp");
 
-      if (chatId) {
-        const el = document.getElementById("chat_id");
-        el.textContent = chatId;
-        el.className = "ok";
-      }
-
-      if (typeof Telegram === "undefined" || !Telegram.WebApp) {
-        document.getElementById("debug").textContent = "❌ Telegram WebApp niet beschikbaar.\nOpen dit via een startapp-knop in Telegram.";
+      if (!raw) {
+        document.getElementById("chat_id").innerHTML = "<span class='fail'>❌ Geen startapp-param</span>";
         return;
       }
 
-      Telegram.WebApp.ready();
-      const data = Telegram.WebApp.initDataUnsafe;
+      try {
+        const decoded = JSON.parse(atob(raw));
+        const chatId = decoded.chat_id;
 
-      if (data?.user) {
-        const set = (id, value) => {
-          const el = document.getElementById(id);
-          if (value) {
-            el.textContent = value;
-            el.className = "ok";
-          }
-        };
-
-        set("tgid", data.user.id);
-        set("username", data.user.username);
-        set("first_name", data.user.first_name);
-        set("last_name", data.user.last_name);
+        if (chatId) {
+          document.getElementById("chat_id").innerHTML = `<span class='ok'>${chatId}</span>`;
+        } else {
+          document.getElementById("chat_id").innerHTML = "<span class='fail'>❌ Geen chat_id in startapp</span>";
+        }
+      } catch (err) {
+        document.getElementById("chat_id").innerHTML = `<span class='fail'>❌ Fout bij decoderen: ${err.message}</span>`;
       }
-
-      document.getElementById("debug").textContent = JSON.stringify(data, null, 2);
     };
   </script>
 </body>
