@@ -2,15 +2,35 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Loading...</title>
+  <title>Loading game...</title>
+  <style>
+    body { font-family: sans-serif; padding: 2em; }
+    pre { background: #eee; padding: 1em; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h2>⏳ Game wordt geladen...</h2>
+  <div id="status">Checking Telegram WebApp...</div>
+  <pre id="debug"></pre>
+
   <script>
     window.onload = () => {
-      try {
-        const tg = window.Telegram.WebApp;
-        const raw = tg?.initDataUnsafe?.start_param;
+      const status = document.getElementById("status");
+      const debug = document.getElementById("debug");
 
+      if (typeof Telegram === "undefined" || !Telegram.WebApp) {
+        status.innerHTML = "❌ Telegram WebApp niet gevonden.<br>Open deze pagina via een <b>startapp-link in Telegram</b>.";
+        return;
+      }
+
+      const tg = Telegram.WebApp;
+      const data = tg.initDataUnsafe;
+      debug.textContent = JSON.stringify(data, null, 2);
+
+      try {
+        const raw = data?.start_param;
         if (!raw) {
-          document.body.innerHTML = "<h2>❌ Geen start_param ontvangen</h2>";
+          status.innerHTML = "❌ Geen <code>start_param</code> ontvangen.";
           return;
         }
 
@@ -18,18 +38,18 @@
         const gameId = decoded.game_id;
 
         if (!gameId) {
-          document.body.innerHTML = "<h2>❌ Geen game_id in start_param</h2>";
+          status.innerHTML = "❌ Geen <code>game_id</code> in <code>start_param</code>.";
           return;
         }
 
-        window.location.href = `/${gameId}/`;
+        status.innerHTML = `✅ Game gevonden: <b>${gameId}</b><br>Je wordt doorgestuurd...`;
+        setTimeout(() => {
+          window.location.href = `/${gameId}/`;
+        }, 1500);
       } catch (err) {
-        document.body.innerHTML = `<h2>🚫 Fout: ${err.message}</h2>`;
+        status.innerHTML = `🚫 Fout bij decoderen: ${err.message}`;
       }
     };
   </script>
-</head>
-<body>
-  <h2>⏳ Game wordt geladen...</h2>
 </body>
 </html>
