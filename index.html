@@ -2,15 +2,15 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Loading game...</title>
+  <title>Game Loader</title>
   <style>
-    body { font-family: sans-serif; padding: 2em; }
-    pre { background: #eee; padding: 1em; border-radius: 8px; }
+    body { font-family: sans-serif; padding: 2em; background-color: #111; color: #fff; }
+    pre { background: #222; padding: 1em; border-radius: 8px; overflow-x: auto; }
   </style>
 </head>
 <body>
   <h2>⏳ Game wordt geladen...</h2>
-  <div id="status">Checking Telegram WebApp...</div>
+  <div id="status">Wachten op Telegram WebApp...</div>
   <pre id="debug"></pre>
 
   <script>
@@ -19,16 +19,17 @@
       const debug = document.getElementById("debug");
 
       if (typeof Telegram === "undefined" || !Telegram.WebApp) {
-        status.innerHTML = "❌ Telegram WebApp niet gevonden.<br>Open deze pagina via een <b>startapp-link in Telegram</b>.";
+        status.innerHTML = "❌ Telegram WebApp niet gevonden.<br>Open deze pagina via een <b>startapp-link</b> in Telegram.";
         return;
       }
 
       const tg = Telegram.WebApp;
-      const data = tg.initDataUnsafe;
-      debug.textContent = JSON.stringify(data, null, 2);
+      tg.ready(); // <-- Belangrijk!
 
       try {
-        const raw = data?.start_param;
+        const raw = tg?.initDataUnsafe?.start_param;
+        debug.textContent = JSON.stringify(tg.initDataUnsafe, null, 2);
+
         if (!raw) {
           status.innerHTML = "❌ Geen <code>start_param</code> ontvangen.";
           return;
@@ -47,7 +48,7 @@
           window.location.href = `/${gameId}/`;
         }, 1500);
       } catch (err) {
-        status.innerHTML = `🚫 Fout bij decoderen: ${err.message}`;
+        status.innerHTML = `🚫 Fout: ${err.message}`;
       }
     };
   </script>
