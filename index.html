@@ -1,1 +1,16 @@
-
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><script>
+window.onload = () => {
+  const tg = window.Telegram.WebApp;
+  const raw = tg?.initDataUnsafe?.start_param;
+  if (!raw) return tg?.showAlert("❌ Geen start_param gevonden");
+  const data = JSON.parse(atob(raw));
+  const game = data.game_id || "mazerunner";
+  window.location.href = `/${game}/`; // Bijvoorbeeld: /ghosty/ of /mazerunner/
+};
+</script></head>
+<body>
+<h2 style="font-family:sans-serif">⏳ Laden...</h2>
+</body>
+</html>
