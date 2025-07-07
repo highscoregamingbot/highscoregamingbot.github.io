@@ -1,16 +1,35 @@
 <!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"><script>
-window.onload = () => {
-  const tg = window.Telegram.WebApp;
-  const raw = tg?.initDataUnsafe?.start_param;
-  if (!raw) return tg?.showAlert("❌ Geen start_param gevonden");
-  const data = JSON.parse(atob(raw));
-  const game = data.game_id || "mazerunner";
-  window.location.href = `/${game}/`; // Bijvoorbeeld: /ghosty/ of /mazerunner/
-};
-</script></head>
+<head>
+  <meta charset="UTF-8">
+  <title>Loading...</title>
+  <script>
+    window.onload = () => {
+      try {
+        const tg = window.Telegram.WebApp;
+        const raw = tg?.initDataUnsafe?.start_param;
+
+        if (!raw) {
+          document.body.innerHTML = "<h2>❌ Geen start_param ontvangen</h2>";
+          return;
+        }
+
+        const decoded = JSON.parse(atob(raw));
+        const gameId = decoded.game_id;
+
+        if (!gameId) {
+          document.body.innerHTML = "<h2>❌ Geen game_id in start_param</h2>";
+          return;
+        }
+
+        window.location.href = `/${gameId}/`;
+      } catch (err) {
+        document.body.innerHTML = `<h2>🚫 Fout: ${err.message}</h2>`;
+      }
+    };
+  </script>
+</head>
 <body>
-<h2 style="font-family:sans-serif">⏳ Laden...</h2>
+  <h2>⏳ Game wordt geladen...</h2>
 </body>
 </html>
