@@ -2,54 +2,73 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Game Loader</title>
+  <title>Telegram WebApp Test</title>
   <style>
-    body { font-family: sans-serif; padding: 2em; background-color: #111; color: #fff; }
-    pre { background: #222; padding: 1em; border-radius: 8px; overflow-x: auto; }
+    body {
+      font-family: sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 2em;
+    }
+    h2 { margin-top: 0; }
+    .ok { color: #0f0; }
+    .fail { color: #f00; }
+    pre {
+      background: #222;
+      padding: 1em;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
   </style>
 </head>
 <body>
-  <h2>⏳ Game wordt geladen...</h2>
-  <div id="status">Wachten op Telegram WebApp...</div>
+  <h2>🧪 Telegram WebApp Debug</h2>
+
+  <ul>
+    <li><b>Chat ID:</b> <span id="chat_id" class="fail">❌ Niet gevonden</span></li>
+    <li><b>Telegram ID:</b> <span id="tgid" class="fail">❌ Niet gevonden</span></li>
+    <li><b>Username:</b> <span id="username" class="fail">❌ Niet gevonden</span></li>
+    <li><b>Voornaam:</b> <span id="first_name" class="fail">❌ Niet gevonden</span></li>
+    <li><b>Achternaam:</b> <span id="last_name" class="fail">❌ Niet gevonden</span></li>
+  </ul>
+
   <pre id="debug"></pre>
 
   <script>
     window.onload = () => {
-      const status = document.getElementById("status");
-      const debug = document.getElementById("debug");
+      const urlParams = new URLSearchParams(window.location.search);
+      const chatId = urlParams.get("chat_id");
+
+      if (chatId) {
+        const el = document.getElementById("chat_id");
+        el.textContent = chatId;
+        el.className = "ok";
+      }
 
       if (typeof Telegram === "undefined" || !Telegram.WebApp) {
-        status.innerHTML = "❌ Telegram WebApp niet gevonden.<br>Open deze pagina via een <b>startapp-link</b> in Telegram.";
+        document.getElementById("debug").textContent = "❌ Telegram WebApp niet beschikbaar.\nOpen dit via een startapp-knop in Telegram.";
         return;
       }
 
-      const tg = Telegram.WebApp;
-      tg.ready(); // <-- Belangrijk!
+      Telegram.WebApp.ready();
+      const data = Telegram.WebApp.initDataUnsafe;
 
-      try {
-        const raw = tg?.initDataUnsafe?.start_param;
-        debug.textContent = JSON.stringify(tg.initDataUnsafe, null, 2);
+      if (data?.user) {
+        const set = (id, value) => {
+          const el = document.getElementById(id);
+          if (value) {
+            el.textContent = value;
+            el.className = "ok";
+          }
+        };
 
-        if (!raw) {
-          status.innerHTML = "❌ Geen <code>start_param</code> ontvangen.";
-          return;
-        }
-
-        const decoded = JSON.parse(atob(raw));
-        const gameId = decoded.game_id;
-
-        if (!gameId) {
-          status.innerHTML = "❌ Geen <code>game_id</code> in <code>start_param</code>.";
-          return;
-        }
-
-        status.innerHTML = `✅ Game gevonden: <b>${gameId}</b><br>Je wordt doorgestuurd...`;
-        setTimeout(() => {
-          window.location.href = `/${gameId}/`;
-        }, 1500);
-      } catch (err) {
-        status.innerHTML = `🚫 Fout: ${err.message}`;
+        set("tgid", data.user.id);
+        set("username", data.user.username);
+        set("first_name", data.user.first_name);
+        set("last_name", data.user.last_name);
       }
+
+      document.getElementById("debug").textContent = JSON.stringify(data, null, 2);
     };
   </script>
 </body>
