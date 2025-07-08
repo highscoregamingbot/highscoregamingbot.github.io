@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Chat ID Debug (Telegram WebApp)</title>
+  <title>StartApp ChatID + Param Debug</title>
   <style>
     body { background: #111; color: #fff; font-family: sans-serif; padding: 2em; }
     .ok { color: #0f0; }
@@ -11,41 +11,44 @@
   </style>
 </head>
 <body>
-  <h2>📡 Chat ID Test (WebApp)</h2>
-  <p><b>Chat ID:</b> <span id="chat_id">⏳ Wachten op Telegram data...</span></p>
+  <h2>🚀 Telegram StartApp WebApp Debug</h2>
+  <p><b>StartParam (url):</b> <span id="param">⏳</span></p>
+  <p><b>Chat ID (JS):</b> <span id="chatid">⏳</span></p>
+  <p><b>User ID (JS):</b> <span id="userid">⏳</span></p>
   <details>
-    <summary style="color:#ccc; cursor:pointer">Debug info (initDataUnsafe)</summary>
+    <summary style="color:#ccc; cursor:pointer">initDataUnsafe (debug)</summary>
     <pre id="raw"></pre>
   </details>
   <script>
-    window.onload = () => {
-      const output = document.getElementById("chat_id");
+    // Lees start_param uit url (voor je eigen tracking)
+    const urlParams = new URLSearchParams(window.location.search);
+    const startParam = urlParams.get('start_param');
+    document.getElementById("param").textContent = startParam || "—";
+
+    // Wacht tot Telegram WebApp context geladen is
+    function showInfo() {
+      const chatSpan = document.getElementById("chatid");
+      const userSpan = document.getElementById("userid");
       const raw = document.getElementById("raw");
 
-      function showId() {
-        if (
-          window.Telegram &&
-          window.Telegram.WebApp &&
-          window.Telegram.WebApp.initDataUnsafe
-        ) {
-          const data = window.Telegram.WebApp.initDataUnsafe;
-          raw.textContent = JSON.stringify(data, null, 2);
-          let chatId = data.chat && data.chat.id ? data.chat.id : null;
-          let userId = data.user && data.user.id ? data.user.id : null;
-          if (chatId) {
-            output.innerHTML = `<span class='ok'>${chatId}</span> <span style="font-size:80%">(groep of kanaal)</span>`;
-          } else if (userId) {
-            output.innerHTML = `<span class='ok'>${userId}</span> <span style="font-size:80%">(privéchat)</span>`;
-          } else {
-            output.innerHTML = "<span class='fail'>❌ Geen chat_id of user_id gevonden.<br>Test in een groep waar de bot een knop stuurt.</span>";
-          }
-        } else {
-          output.innerHTML = "⏳ Wachten op Telegram WebApp-data...";
-          setTimeout(showId, 250);
-        }
+      if (
+        window.Telegram &&
+        window.Telegram.WebApp &&
+        window.Telegram.WebApp.initDataUnsafe
+      ) {
+        const data = window.Telegram.WebApp.initDataUnsafe;
+        raw.textContent = JSON.stringify(data, null, 2);
+
+        let chatId = data.chat && data.chat.id ? data.chat.id : null;
+        let userId = data.user && data.user.id ? data.user.id : null;
+
+        chatSpan.textContent = chatId || "—";
+        userSpan.textContent = userId || "—";
+      } else {
+        setTimeout(showInfo, 150);
       }
-      showId();
-    };
+    }
+    showInfo();
   </script>
 </body>
 </html>
