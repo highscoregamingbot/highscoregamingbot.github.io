@@ -2,29 +2,31 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>StartApp Context Debug</title>
+  <title>Telegram UserInfo Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { background: #111; color: #fff; font-family: sans-serif; padding: 2em; }
+    body { background: #181818; color: #fff; font-family: sans-serif; padding: 2em; }
     .found { color: #0f0; }
     .fail { color: #f00; }
     .wait { color: #ffa500; }
-    pre { color: #bbb; background: #222; padding: 1em; border-radius: 8px; }
+    pre { color: #ccc; background: #222; padding: 1em; border-radius: 8px; }
+    .key { color: #0af; }
   </style>
 </head>
 <body>
-  <h2>StartApp Telegram Context Debug</h2>
+  <h2>Telegram User Info Debug</h2>
   <div id="output">
-    <span class="wait">⏳ Wachten op Telegram context...</span>
+    <span class="wait">⏳ Wachten op Telegram user info...</span>
   </div>
-  <details>
-    <summary style="color:#ccc;cursor:pointer;">Toon volledige initDataUnsafe (debug)</summary>
+  <details style="margin-top:2em;">
+    <summary style="color:#ccc;cursor:pointer;">Toon ruwe Telegram context (debug)</summary>
     <pre id="raw"></pre>
   </details>
   <script>
-    function showData() {
+    function showUserInfo() {
       const out = document.getElementById("output");
       const raw = document.getElementById("raw");
-
+      // Check of Telegram context er is
       if (
         window.Telegram &&
         window.Telegram.WebApp &&
@@ -32,23 +34,21 @@
       ) {
         const data = window.Telegram.WebApp.initDataUnsafe;
         raw.textContent = JSON.stringify(data, null, 2);
-
-        let html = "";
-        for (const key in data) {
-          if (data[key] && typeof data[key] === "object") {
-            html += `<b>${key}:</b><br><pre>${JSON.stringify(data[key], null, 2)}</pre>`;
-          } else {
-            html += `<b>${key}:</b> <span class="found">${data[key]}</span><br>`;
-          }
+        if (data.user) {
+          let html = `<b class="key">user.id:</b> <span class="found">${data.user.id || ''}</span><br>`;
+          html += `<b class="key">username:</b> <span class="found">${data.user.username || ''}</span><br>`;
+          html += `<b class="key">first_name:</b> <span class="found">${data.user.first_name || ''}</span><br>`;
+          html += `<b class="key">last_name:</b> <span class="found">${data.user.last_name || ''}</span><br>`;
+          out.innerHTML = html;
+        } else {
+          out.innerHTML = `<span class="fail">❌ Geen user info gevonden. Open deze pagina via de StartApp-link in Telegram op mobiel.</span>`;
         }
-        if (!html) html = `<span class="fail">❌ Geen data gevonden</span>`;
-        out.innerHTML = html;
       } else {
         out.innerHTML = `<span class="wait">⏳ Nog even geduld...</span>`;
-        setTimeout(showData, 250);
+        setTimeout(showUserInfo, 250);
       }
     }
-    showData();
+    showUserInfo();
   </script>
 </body>
 </html>
