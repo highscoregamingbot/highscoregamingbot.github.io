@@ -2,38 +2,52 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>StartApp ChatID Check</title>
+  <title>Telegram WebApp ChatID Test</title>
   <style>
     body { background: #111; color: #fff; font-family: sans-serif; padding: 2em; }
     .ok { color: #0f0; }
     .fail { color: #f00; }
+    pre { color: #bbb; background: #222; padding: 1em; border-radius: 8px; }
   </style>
 </head>
 <body>
-  <h2>🚀 StartApp WebApp ChatID Check</h2>
-  <p><b>ChatID:</b> <span id="chat_id">⏳ Wachten op Telegram WebApp...</span></p>
-  <p><b>StartParam:</b> <span id="start_param">—</span></p>
+  <h2>Telegram WebApp ChatID Test</h2>
+  <p>
+    <b>ChatID:</b> <span id="chat_id">⏳</span><br>
+    <b>UserID:</b> <span id="user_id">⏳</span>
+  </p>
+  <details>
+    <summary style="color:#ccc;cursor:pointer;">Bekijk ruwe Telegram context (debug)</summary>
+    <pre id="raw"></pre>
+  </details>
   <script>
-    function checkChatId() {
+    function checkIds() {
+      const chatSpan = document.getElementById("chat_id");
+      const userSpan = document.getElementById("user_id");
+      const raw = document.getElementById("raw");
+
       if (
         window.Telegram &&
         window.Telegram.WebApp &&
         window.Telegram.WebApp.initDataUnsafe
       ) {
         const data = window.Telegram.WebApp.initDataUnsafe;
+        raw.textContent = JSON.stringify(data, null, 2);
+
         let chatId = data.chat && data.chat.id ? data.chat.id : null;
-        let startParam = data.start_param || null;
-        document.getElementById("start_param").innerText = startParam || "—";
-        if (chatId) {
-          document.getElementById("chat_id").innerHTML = `<span class="ok">✅ ${chatId} gevonden</span>`;
-        } else {
-          document.getElementById("chat_id").innerHTML = `<span class="fail">❌ Geen chat_id gevonden</span>`;
-        }
+        let userId = data.user && data.user.id ? data.user.id : null;
+
+        chatSpan.innerHTML = chatId
+          ? `<span class="ok">${chatId} ✅</span>`
+          : `<span class="fail">Niet gevonden ❌ (Open in groep!)</span>`;
+        userSpan.innerHTML = userId
+          ? `<span class="ok">${userId} ✅</span>`
+          : `<span class="fail">Niet gevonden ❌</span>`;
       } else {
-        setTimeout(checkChatId, 200);
+        setTimeout(checkIds, 200);
       }
     }
-    checkChatId();
+    checkIds();
   </script>
 </body>
 </html>
