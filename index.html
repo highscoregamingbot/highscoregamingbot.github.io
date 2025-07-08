@@ -4,42 +4,28 @@
   <meta charset="UTF-8">
   <title>Chat ID Debug</title>
   <style>
-    body {
-      background: #111;
-      color: white;
-      font-family: sans-serif;
-      padding: 2em;
-    }
+    body { background: #111; color: white; font-family: sans-serif; padding: 2em; }
     .ok { color: #0f0; }
     .fail { color: #f00; }
   </style>
 </head>
 <body>
   <h2>📡 Chat ID Test</h2>
-  <p><b>Chat ID:</b> <span id="chat_id">⏳ Bezig met uitlezen...</span></p>
+  <p><b>Chat ID:</b> <span id="chat_id">⏳ Uitlezen...</span></p>
 
   <script>
+    // Wacht tot de pagina volledig geladen is
     window.onload = () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const raw = urlParams.get("startapp");
-
-      if (!raw) {
-        document.getElementById("chat_id").innerHTML = "<span class='fail'>❌ Geen startapp-param</span>";
-        return;
-      }
-
-      try {
-        const decoded = JSON.parse(atob(raw));
-        const chatId = decoded.chat_id;
-
+      const output = document.getElementById("chat_id");
+      setTimeout(() => {  // Simuleert async wachten, mag weg als je direct wilt tonen
+        const urlParams = new URLSearchParams(window.location.search);
+        const chatId = urlParams.get("chat_id");
         if (chatId) {
-          document.getElementById("chat_id").innerHTML = `<span class='ok'>${chatId}</span>`;
+          output.innerHTML = `<span class="ok">${chatId}</span>`;
         } else {
-          document.getElementById("chat_id").innerHTML = "<span class='fail'>❌ Geen chat_id in startapp</span>";
+          output.innerHTML = `<span class="fail">❌ Geen chat_id gevonden in de URL!</span>`;
         }
-      } catch (err) {
-        document.getElementById("chat_id").innerHTML = `<span class='fail'>❌ Fout bij decoderen: ${err.message}</span>`;
-      }
+      }, 300); // 300ms wachten om het wachten te simuleren
     };
   </script>
 </body>
