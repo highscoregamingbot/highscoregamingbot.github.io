@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Chat ID Checker</title>
+  <title>StartApp ChatID Check</title>
   <style>
     body { background: #111; color: #fff; font-family: sans-serif; padding: 2em; }
     .ok { color: #0f0; }
@@ -10,18 +10,30 @@
   </style>
 </head>
 <body>
-  <h2>ChatID checker</h2>
-  <p><b>ChatID uit URL:</b> <span id="chat_id">⏳ Uitlezen...</span></p>
+  <h2>🚀 StartApp WebApp ChatID Check</h2>
+  <p><b>ChatID:</b> <span id="chat_id">⏳ Wachten op Telegram WebApp...</span></p>
+  <p><b>StartParam:</b> <span id="start_param">—</span></p>
   <script>
-    window.onload = () => {
-      const chatId = new URLSearchParams(window.location.search).get("chat_id");
-      const output = document.getElementById("chat_id");
-      if (chatId) {
-        output.innerHTML = `<span class="ok">✅ ${chatId} gevonden</span>`;
+    function checkChatId() {
+      if (
+        window.Telegram &&
+        window.Telegram.WebApp &&
+        window.Telegram.WebApp.initDataUnsafe
+      ) {
+        const data = window.Telegram.WebApp.initDataUnsafe;
+        let chatId = data.chat && data.chat.id ? data.chat.id : null;
+        let startParam = data.start_param || null;
+        document.getElementById("start_param").innerText = startParam || "—";
+        if (chatId) {
+          document.getElementById("chat_id").innerHTML = `<span class="ok">✅ ${chatId} gevonden</span>`;
+        } else {
+          document.getElementById("chat_id").innerHTML = `<span class="fail">❌ Geen chat_id gevonden</span>`;
+        }
       } else {
-        output.innerHTML = `<span class="fail">❌ Geen chat_id gevonden in de URL</span>`;
+        setTimeout(checkChatId, 200);
       }
-    };
+    }
+    checkChatId();
   </script>
 </body>
 </html>
