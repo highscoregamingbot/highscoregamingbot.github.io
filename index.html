@@ -2,32 +2,29 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>StartApp ChatID Test</title>
+  <title>StartApp Context Debug</title>
   <style>
     body { background: #111; color: #fff; font-family: sans-serif; padding: 2em; }
-    .ok { color: #0f0; }
+    .found { color: #0f0; }
     .fail { color: #f00; }
     .wait { color: #ffa500; }
     pre { color: #bbb; background: #222; padding: 1em; border-radius: 8px; }
   </style>
 </head>
 <body>
-  <h2>StartApp ChatID Test</h2>
-  <p>
-    <b>ChatID:</b> <span id="chat_id" class="wait">⏳ Wachten op Telegram context...</span><br>
-    <b>UserID:</b> <span id="user_id" class="wait">⏳</span>
-  </p>
+  <h2>StartApp Telegram Context Debug</h2>
+  <div id="output">
+    <span class="wait">⏳ Wachten op Telegram context...</span>
+  </div>
   <details>
-    <summary style="color:#ccc;cursor:pointer;">Bekijk ruwe Telegram context (debug)</summary>
+    <summary style="color:#ccc;cursor:pointer;">Toon volledige initDataUnsafe (debug)</summary>
     <pre id="raw"></pre>
   </details>
   <script>
-    function waitForChatId() {
-      const chatSpan = document.getElementById("chat_id");
-      const userSpan = document.getElementById("user_id");
+    function showData() {
+      const out = document.getElementById("output");
       const raw = document.getElementById("raw");
 
-      // Controleer of Telegram context geladen is
       if (
         window.Telegram &&
         window.Telegram.WebApp &&
@@ -36,25 +33,23 @@
         const data = window.Telegram.WebApp.initDataUnsafe;
         raw.textContent = JSON.stringify(data, null, 2);
 
-        let chatId = data.chat && data.chat.id ? data.chat.id : null;
-        let userId = data.user && data.user.id ? data.user.id : null;
-
-        if (chatId) {
-          chatSpan.innerHTML = `<span class="ok">${chatId} ✅</span>`;
-        } else {
-          chatSpan.innerHTML = `<span class="fail">❌ Geen chat_id gevonden (je zit waarschijnlijk niet in een groep, of deze knop is niet in de groep geopend)</span>`;
+        let html = "";
+        // Toon ALLE keys die direct in data staan
+        for (const key in data) {
+          if (data[key] && typeof data[key] === "object") {
+            html += `<b>${key}:</b><br><pre>${JSON.stringify(data[key], null, 2)}</pre>`;
+          } else {
+            html += `<b>${key}:</b> <span class="found">${data[key]}</span><br>`;
+          }
         }
-        userSpan.innerHTML = userId
-          ? `<span class="ok">${userId} ✅</span>`
-          : `<span class="fail">Niet gevonden ❌</span>`;
+        if (!html) html = `<span class="fail">❌ Geen data gevonden</span>`;
+        out.innerHTML = html;
       } else {
-        // Blijf wachten!
-        chatSpan.innerHTML = `<span class="wait">⏳ Nog even geduld...</span>`;
-        userSpan.innerHTML = `<span class="wait">⏳</span>`;
-        setTimeout(waitForChatId, 200);
+        out.innerHTML = `<span class="wait">⏳ Nog even geduld...</span>`;
+        setTimeout(showData, 250);
       }
     }
-    waitForChatId();
+    showData();
   </script>
 </body>
 </html>
