@@ -1,54 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Telegram UserInfo Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>InitData Viewer</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body { background: #181818; color: #fff; font-family: sans-serif; padding: 2em; }
-    .found { color: #0f0; }
-    .fail { color: #f00; }
-    .wait { color: #ffa500; }
-    pre { color: #ccc; background: #222; padding: 1em; border-radius: 8px; }
-    .key { color: #0af; }
+    body {
+      background: #111;
+      color: #eee;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    pre {
+      background: #222;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #00bfff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <h2>Telegram User Info Debug</h2>
-  <div id="output">
-    <span class="wait">⏳ Wachten op Telegram user info...</span>
-  </div>
-  <details style="margin-top:2em;">
-    <summary style="color:#ccc;cursor:pointer;">Toon ruwe Telegram context (debug)</summary>
-    <pre id="raw"></pre>
-  </details>
+  <h2>🧠 Telegram InitData</h2>
+  <div id="output">Loading...</div>
+  <button onclick="sendBack()">Send back to bot</button>
+
   <script>
-    function showUserInfo() {
-      const out = document.getElementById("output");
-      const raw = document.getElementById("raw");
-      // Check of Telegram context er is
-      if (
-        window.Telegram &&
-        window.Telegram.WebApp &&
-        window.Telegram.WebApp.initDataUnsafe
-      ) {
-        const data = window.Telegram.WebApp.initDataUnsafe;
-        raw.textContent = JSON.stringify(data, null, 2);
-        if (data.user) {
-          let html = `<b class="key">user.id:</b> <span class="found">${data.user.id || ''}</span><br>`;
-          html += `<b class="key">username:</b> <span class="found">${data.user.username || ''}</span><br>`;
-          html += `<b class="key">first_name:</b> <span class="found">${data.user.first_name || ''}</span><br>`;
-          html += `<b class="key">last_name:</b> <span class="found">${data.user.last_name || ''}</span><br>`;
-          out.innerHTML = html;
-        } else {
-          out.innerHTML = `<span class="fail">❌ Geen user info gevonden. Open deze pagina via de StartApp-link in Telegram op mobiel.</span>`;
-        }
-      } else {
-        out.innerHTML = `<span class="wait">⏳ Nog even geduld...</span>`;
-        setTimeout(showUserInfo, 250);
-      }
+    const initData = Telegram.WebApp.initDataUnsafe;
+    const raw = Telegram.WebApp.initData;
+
+    document.getElementById("output").innerHTML = `
+      <pre>${JSON.stringify({
+        initDataRaw: raw,
+        user: initData.user,
+        chat: initData.chat,
+        chat_type: initData.chat_type,
+        auth_date: initData.auth_date,
+        hash: initData.hash,
+        start_param: initData.start_param,
+      }, null, 2)}</pre>
+    `;
+
+    function sendBack() {
+      Telegram.WebApp.sendData("👋 Hello from WebApp!\n\n" + JSON.stringify(initData));
+      Telegram.WebApp.close(); // sluit de WebApp netjes
     }
-    showUserInfo();
   </script>
 </body>
 </html>
