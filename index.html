@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>StartApp InitData</title>
+  <title>StartApp Param Decoder</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
@@ -16,25 +16,40 @@
       padding: 15px;
       border-radius: 8px;
     }
+    .status {
+      font-weight: bold;
+      color: #0f0;
+    }
   </style>
 </head>
 <body>
-  <h2>📦 Telegram InitDataUnsafe</h2>
-  <div id="result">Reading...</div>
+  <h2>📦 StartApp Parameter Info</h2>
+  <div id="result">⏳ Bezig met laden...</div>
 
   <script>
-    const unsafe = Telegram.WebApp.initDataUnsafe;
+    function decodeBase64Json(str) {
+      try {
+        const decoded = atob(str);
+        return JSON.parse(decoded);
+      } catch (e) {
+        return null;
+      }
+    }
 
-    const chatId = unsafe?.chat?.id || "(❌ Geen chat_id gevonden)";
-    const output = {
-      chat_id: chatId,
-      user: unsafe?.user || {},
-      chat_type: unsafe?.chat_type,
-      full: unsafe,
-    };
+    const param = Telegram.WebApp.initDataUnsafe?.start_param;
+    const data = decodeBase64Json(param);
 
-    document.getElementById("result").innerHTML =
-      "<pre>" + JSON.stringify(output, null, 2) + "</pre>";
+    if (data && data.chat_id) {
+      document.getElementById("result").innerHTML = `
+        <p class="status">✅ Gelukt! Ingelezen data:</p>
+        <pre>${JSON.stringify(data, null, 2)}</pre>
+      `;
+    } else {
+      document.getElementById("result").innerHTML = `
+        <p class="status" style="color:#f00;">❌ Mislukt. Geen geldige chat_id gevonden.</p>
+        <pre>${JSON.stringify(param)}</pre>
+      `;
+    }
   </script>
 </body>
 </html>
