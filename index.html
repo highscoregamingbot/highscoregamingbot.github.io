@@ -2,53 +2,26 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>StartApp ChatID + Param Debug</title>
+  <title>Chat ID Checker</title>
   <style>
     body { background: #111; color: #fff; font-family: sans-serif; padding: 2em; }
     .ok { color: #0f0; }
     .fail { color: #f00; }
-    pre { color: #999; background: #222; padding: 1em; border-radius: 8px; }
   </style>
 </head>
 <body>
-  <h2>🚀 Telegram StartApp WebApp Debug</h2>
-  <p><b>StartParam (url):</b> <span id="param">⏳</span></p>
-  <p><b>Chat ID (JS):</b> <span id="chatid">⏳</span></p>
-  <p><b>User ID (JS):</b> <span id="userid">⏳</span></p>
-  <details>
-    <summary style="color:#ccc; cursor:pointer">initDataUnsafe (debug)</summary>
-    <pre id="raw"></pre>
-  </details>
+  <h2>ChatID checker</h2>
+  <p><b>ChatID uit URL:</b> <span id="chat_id">⏳ Uitlezen...</span></p>
   <script>
-    // Lees start_param uit url (voor je eigen tracking)
-    const urlParams = new URLSearchParams(window.location.search);
-    const startParam = urlParams.get('start_param');
-    document.getElementById("param").textContent = startParam || "—";
-
-    // Wacht tot Telegram WebApp context geladen is
-    function showInfo() {
-      const chatSpan = document.getElementById("chatid");
-      const userSpan = document.getElementById("userid");
-      const raw = document.getElementById("raw");
-
-      if (
-        window.Telegram &&
-        window.Telegram.WebApp &&
-        window.Telegram.WebApp.initDataUnsafe
-      ) {
-        const data = window.Telegram.WebApp.initDataUnsafe;
-        raw.textContent = JSON.stringify(data, null, 2);
-
-        let chatId = data.chat && data.chat.id ? data.chat.id : null;
-        let userId = data.user && data.user.id ? data.user.id : null;
-
-        chatSpan.textContent = chatId || "—";
-        userSpan.textContent = userId || "—";
+    window.onload = () => {
+      const chatId = new URLSearchParams(window.location.search).get("chat_id");
+      const output = document.getElementById("chat_id");
+      if (chatId) {
+        output.innerHTML = `<span class="ok">✅ ${chatId} gevonden</span>`;
       } else {
-        setTimeout(showInfo, 150);
+        output.innerHTML = `<span class="fail">❌ Geen chat_id gevonden in de URL</span>`;
       }
-    }
-    showInfo();
+    };
   </script>
 </body>
 </html>
