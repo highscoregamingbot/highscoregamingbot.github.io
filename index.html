@@ -2,29 +2,31 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>StartApp Context Debug</title>
+  <title>MazeRunner Telegram Debug</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { background: #111; color: #fff; font-family: sans-serif; padding: 2em; }
-    .found { color: #0f0; }
+    .key { color: #0af; }
+    .value { color: #0f0; }
     .fail { color: #f00; }
     .wait { color: #ffa500; }
     pre { color: #bbb; background: #222; padding: 1em; border-radius: 8px; }
+    .found { color: #0f0; }
   </style>
 </head>
 <body>
-  <h2>StartApp Telegram Context Debug</h2>
-  <div id="output">
-    <span class="wait">⏳ Wachten op Telegram context...</span>
+  <h2>MazeRunner Telegram Context Test</h2>
+  <div id="summary">
+    <span class="wait">⏳ Wachten op Telegram WebApp context...</span>
   </div>
-  <details>
-    <summary style="color:#ccc;cursor:pointer;">Toon volledige initDataUnsafe (debug)</summary>
+  <details style="margin-top:2em;">
+    <summary style="color:#ccc;cursor:pointer;">Volledige initDataUnsafe (debug)</summary>
     <pre id="raw"></pre>
   </details>
   <script>
-    function showData() {
-      const out = document.getElementById("output");
+    function showContext() {
+      const out = document.getElementById("summary");
       const raw = document.getElementById("raw");
-
       if (
         window.Telegram &&
         window.Telegram.WebApp &&
@@ -33,23 +35,37 @@
         const data = window.Telegram.WebApp.initDataUnsafe;
         raw.textContent = JSON.stringify(data, null, 2);
 
-        let html = "";
-        // Toon ALLE keys die direct in data staan
-        for (const key in data) {
-          if (data[key] && typeof data[key] === "object") {
-            html += `<b>${key}:</b><br><pre>${JSON.stringify(data[key], null, 2)}</pre>`;
-          } else {
-            html += `<b>${key}:</b> <span class="found">${data[key]}</span><br>`;
-          }
+        let html = "<b>Gevonden Telegram data:</b><br><br>";
+        let foundSomething = false;
+        // Toon direct user info (meestal altijd aanwezig)
+        if (data.user) {
+          html += `<b class="key">user.id:</b> <span class="value">${data.user.id || ''}</span><br>`;
+          html += `<b class="key">user.username:</b> <span class="value">${data.user.username || ''}</span><br>`;
+          html += `<b class="key">user.first_name:</b> <span class="value">${data.user.first_name || ''}</span><br>`;
+          html += `<b class="key">user.last_name:</b> <span class="value">${data.user.last_name || ''}</span><br>`;
+          foundSomething = true;
         }
-        if (!html) html = `<span class="fail">❌ Geen data gevonden</span>`;
+        // Toon chat info als die er is (alleen bij groep)
+        if (data.chat) {
+          html += `<b class="key">chat.id:</b> <span class="value">${data.chat.id || ''}</span><br>`;
+          html += `<b class="key">chat.type:</b> <span class="value">${data.chat.type || ''}</span><br>`;
+          foundSomething = true;
+        }
+        // Toon start_param als aanwezig
+        if (data.start_param) {
+          html += `<b class="key">start_param:</b> <span class="value">${data.start_param}</span><br>`;
+          foundSomething = true;
+        }
+        if (!foundSomething) {
+          html += `<span class="fail">❌ Geen bruikbare Telegram data gevonden. Open deze pagina via een bot-knop in Telegram!</span>`;
+        }
         out.innerHTML = html;
       } else {
         out.innerHTML = `<span class="wait">⏳ Nog even geduld...</span>`;
-        setTimeout(showData, 250);
+        setTimeout(showContext, 250);
       }
     }
-    showData();
+    showContext();
   </script>
 </body>
 </html>
