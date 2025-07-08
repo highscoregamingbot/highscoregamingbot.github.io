@@ -2,30 +2,49 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Chat ID Debug</title>
+  <title>Chat ID Debug (Telegram WebApp)</title>
   <style>
-    body { background: #111; color: white; font-family: sans-serif; padding: 2em; }
+    body { background: #111; color: #fff; font-family: sans-serif; padding: 2em; }
     .ok { color: #0f0; }
     .fail { color: #f00; }
+    pre { color: #999; background: #222; padding: 1em; border-radius: 8px; }
   </style>
 </head>
 <body>
-  <h2>📡 Chat ID Test</h2>
-  <p><b>Chat ID:</b> <span id="chat_id">⏳ Uitlezen...</span></p>
-
+  <h2>📡 Chat ID Test (WebApp)</h2>
+  <p><b>Chat ID:</b> <span id="chat_id">⏳ Wachten op Telegram data...</span></p>
+  <details>
+    <summary style="color:#ccc; cursor:pointer">Debug info (initDataUnsafe)</summary>
+    <pre id="raw"></pre>
+  </details>
   <script>
-    // Wacht tot de pagina volledig geladen is
     window.onload = () => {
       const output = document.getElementById("chat_id");
-      setTimeout(() => {  // Simuleert async wachten, mag weg als je direct wilt tonen
-        const urlParams = new URLSearchParams(window.location.search);
-        const chatId = urlParams.get("chat_id");
-        if (chatId) {
-          output.innerHTML = `<span class="ok">${chatId}</span>`;
+      const raw = document.getElementById("raw");
+
+      function showId() {
+        if (
+          window.Telegram &&
+          window.Telegram.WebApp &&
+          window.Telegram.WebApp.initDataUnsafe
+        ) {
+          const data = window.Telegram.WebApp.initDataUnsafe;
+          raw.textContent = JSON.stringify(data, null, 2);
+          let chatId = data.chat && data.chat.id ? data.chat.id : null;
+          let userId = data.user && data.user.id ? data.user.id : null;
+          if (chatId) {
+            output.innerHTML = `<span class='ok'>${chatId}</span> <span style="font-size:80%">(groep of kanaal)</span>`;
+          } else if (userId) {
+            output.innerHTML = `<span class='ok'>${userId}</span> <span style="font-size:80%">(privéchat)</span>`;
+          } else {
+            output.innerHTML = "<span class='fail'>❌ Geen chat_id of user_id gevonden.<br>Test in een groep waar de bot een knop stuurt.</span>";
+          }
         } else {
-          output.innerHTML = `<span class="fail">❌ Geen chat_id gevonden in de URL!</span>`;
+          output.innerHTML = "⏳ Wachten op Telegram WebApp-data...";
+          setTimeout(showId, 250);
         }
-      }, 300); // 300ms wachten om het wachten te simuleren
+      }
+      showId();
     };
   </script>
 </body>
