@@ -2,30 +2,32 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Telegram WebApp ChatID Test</title>
+  <title>StartApp ChatID Test</title>
   <style>
     body { background: #111; color: #fff; font-family: sans-serif; padding: 2em; }
     .ok { color: #0f0; }
     .fail { color: #f00; }
+    .wait { color: #ffa500; }
     pre { color: #bbb; background: #222; padding: 1em; border-radius: 8px; }
   </style>
 </head>
 <body>
-  <h2>Telegram WebApp ChatID Test</h2>
+  <h2>StartApp ChatID Test</h2>
   <p>
-    <b>ChatID:</b> <span id="chat_id">⏳</span><br>
-    <b>UserID:</b> <span id="user_id">⏳</span>
+    <b>ChatID:</b> <span id="chat_id" class="wait">⏳ Wachten op Telegram context...</span><br>
+    <b>UserID:</b> <span id="user_id" class="wait">⏳</span>
   </p>
   <details>
     <summary style="color:#ccc;cursor:pointer;">Bekijk ruwe Telegram context (debug)</summary>
     <pre id="raw"></pre>
   </details>
   <script>
-    function checkIds() {
+    function waitForChatId() {
       const chatSpan = document.getElementById("chat_id");
       const userSpan = document.getElementById("user_id");
       const raw = document.getElementById("raw");
 
+      // Controleer of Telegram context geladen is
       if (
         window.Telegram &&
         window.Telegram.WebApp &&
@@ -37,17 +39,22 @@
         let chatId = data.chat && data.chat.id ? data.chat.id : null;
         let userId = data.user && data.user.id ? data.user.id : null;
 
-        chatSpan.innerHTML = chatId
-          ? `<span class="ok">${chatId} ✅</span>`
-          : `<span class="fail">Niet gevonden ❌ (Open in groep!)</span>`;
+        if (chatId) {
+          chatSpan.innerHTML = `<span class="ok">${chatId} ✅</span>`;
+        } else {
+          chatSpan.innerHTML = `<span class="fail">❌ Geen chat_id gevonden (je zit waarschijnlijk niet in een groep, of deze knop is niet in de groep geopend)</span>`;
+        }
         userSpan.innerHTML = userId
           ? `<span class="ok">${userId} ✅</span>`
           : `<span class="fail">Niet gevonden ❌</span>`;
       } else {
-        setTimeout(checkIds, 200);
+        // Blijf wachten!
+        chatSpan.innerHTML = `<span class="wait">⏳ Nog even geduld...</span>`;
+        userSpan.innerHTML = `<span class="wait">⏳</span>`;
+        setTimeout(waitForChatId, 200);
       }
     }
-    checkIds();
+    waitForChatId();
   </script>
 </body>
 </html>
