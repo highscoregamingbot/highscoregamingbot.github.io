@@ -1,55 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>StartApp Param Decoder</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>$HSC Token - Highscore Gaming</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      background-color: #111;
-      color: #eee;
-      font-family: sans-serif;
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background-color: #0d001f;
+      color: #00ccff;
+    }
+    header {
+      background-color: #1a0040;
+      text-align: center;
       padding: 20px;
+      border-bottom: 2px solid #8f00ff;
     }
-    pre {
-      background: #222;
-      padding: 15px;
-      border-radius: 8px;
+    header img {
+      max-width: 300px;
     }
-    .status {
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #1a0040;
+      padding: 10px 0;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 20px;
       font-weight: bold;
-      color: #0f0;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #ff00ff;
+    }
+    section {
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1, h2 {
+      color: #00ccff;
+      border-bottom: 2px solid #8f00ff;
+      padding-bottom: 10px;
+    }
+    .highlight {
+      color: #ff00ff;
+      font-weight: bold;
+    }
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      margin-top: 20px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #1a0040;
+      color: #999;
+      border-top: 2px solid #8f00ff;
     }
   </style>
 </head>
 <body>
-  <h2>📦 StartApp Parameter Info</h2>
-  <div id="result">⏳ Bezig met laden...</div>
+  <header>
+    <img src="https://highscoregamingbot.github.io/assets/highscore_gaming_logo.png" alt="Highscore Gaming Logo">
+  </header>
 
-  <script>
-    function decodeBase64Json(str) {
-      try {
-        const decoded = atob(str);
-        return JSON.parse(decoded);
-      } catch (e) {
-        return null;
-      }
-    }
+  <nav>
+    <a href="#about">About</a>
+    <a href="#tokenomics">Tokenomics</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#bot">Bot</a>
+    <a href="#chart">Chart</a>
+  </nav>
 
-    const param = Telegram.WebApp.initDataUnsafe?.start_param;
-    const data = decodeBase64Json(param);
+  <section id="about">
+    <h1>About Highscore Gaming</h1>
+    <p>Highscore Gaming is a community-driven gaming project that hosts <span class="highlight">Telegram challenges</span> where players can win <span class="highlight">$HSC tokens</span> and <span class="highlight">Solana</span> by reaching top scores in our WebApp games. Compete in group battles and climb the leaderboards!</p>
+  </section>
 
-    if (data && data.chat_id) {
-      document.getElementById("result").innerHTML = `
-        <p class="status">✅ Gelukt! Ingelezen data:</p>
-        <pre>${JSON.stringify(data, null, 2)}</pre>
-      `;
-    } else {
-      document.getElementById("result").innerHTML = `
-        <p class="status" style="color:#f00;">❌ Mislukt. Geen geldige chat_id gevonden.</p>
-        <pre>${JSON.stringify(param)}</pre>
-      `;
-    }
-  </script>
+  <section id="tokenomics">
+    <h2>Tokenomics</h2>
+    <p><strong>Token Name:</strong> Highscore Token ($HSC)</p>
+    <p><strong>Solana Contract Address:</strong><br><code>CLjRRmcxXxa6qrVMkqxTC9XvU8cc6r7orpoqB4kdfqRF</code></p>
+    <ul>
+      <li>🔁 10% Transaction Tax</li>
+      <li>🎁 Rewards distributed to top players</li>
+      <li>🎮 Utility in our gaming ecosystem</li>
+    </ul>
+  </section>
+
+  <section id="roadmap">
+    <h2>Roadmap</h2>
+    <ul>
+      <li>✅ Telegram Game Bot Live</li>
+      <li>✅ $HSC Token Launch</li>
+      <li>✅ Raydium Listing</li>
+      <li>🔜 Challenge Tournaments with bigger prizes</li>
+      <li>🔜 Game partnerships and ecosystem expansion</li>
+    </ul>
+  </section>
+
+  <section id="bot">
+    <h2>Telegram Bot</h2>
+    <p>Our Telegram bot <strong>@highscoregamingbot</strong> connects players to games, tracks scores, manages leaderboards, and distributes rewards. Join the competition and dominate the charts!</p>
+    <p>Top 20 players who hold <strong>1000+ $HSC</strong> tokens earn a spot on our <span class="highlight">Spinning Wheel</span> for weekly prize draws. 🌀</p>
+    <p><a href="https://t.me/highscoregamingbot" target="_blank">👉 Join the Bot</a></p>
+  </section>
+
+  <section id="chart">
+    <h2>Live Chart</h2>
+    <p>Real-time chart powered by Raydium:</p>
+    <iframe src="https://dexscreener.com/solana/Cx3mTJTUf99BurRypA2u937e5eq4Vw7TsqkdpBDtmjZN"></iframe>
+  </section>
+
+  <footer>
+    &copy; 2025 Highscore Gaming. Powered by $HSC.
+  </footer>
 </body>
 </html>
