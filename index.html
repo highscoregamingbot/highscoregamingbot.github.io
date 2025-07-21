@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>$HSC Token - Highscore Gaming</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -23,19 +23,24 @@
     }
     nav {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       background-color: #1a0040;
-      padding: 10px 0;
+      padding: 15px 0;
+      gap: 10px;
     }
     nav a {
       color: #fff;
       text-decoration: none;
-      margin: 0 20px;
       font-weight: bold;
-      transition: color 0.3s;
+      padding: 10px 20px;
+      background-color: #290060;
+      border-radius: 8px;
+      transition: background-color 0.3s, color 0.3s;
     }
     nav a:hover {
-      color: #ff00ff;
+      background-color: #ff00ff;
+      color: #000;
     }
     section {
       padding: 40px 20px;
@@ -57,6 +62,17 @@
       border: none;
       margin-top: 20px;
     }
+    .social-link {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+      font-size: 18px;
+    }
+    .social-link img {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
     footer {
       text-align: center;
       padding: 20px;
@@ -67,8 +83,9 @@
   </style>
 </head>
 <body>
+
   <header>
-    <img src="https://highscoregamingbot.github.io/logo.png" alt="Highscore Gaming Logo">
+    <img src="https://highscoregamingbot.github.io/logo.png" alt="Highscore Gaming Logo" />
   </header>
 
   <nav>
@@ -77,6 +94,7 @@
     <a href="#roadmap">Roadmap</a>
     <a href="#bot">Bot</a>
     <a href="#chart">Chart</a>
+    <a href="#socials">Socials</a>
   </nav>
 
   <section id="about">
@@ -90,36 +108,26 @@
     <p><strong>Solana Contract Address:</strong><br><code>CLjRRmcxXxa6qrVMkqxTC9XvU8cc6r7orpoqB4kdfqRF</code></p>
     <ul>
       <li>🔁 10% Transaction Tax</li>
-      <li>🎁 Rewards distributed to top players</li>
+      <li>🎁 Solana Rewards distributed to all holders with 750+</li>
+      <li>🎁 Prizes in Solana or $HSC for winner of the prizewheel to holders with 1000+</li>
       <li>🎮 Utility in our gaming ecosystem</li>
     </ul>
   </section>
 
   <section id="roadmap">
-  <h2>Roadmap</h2>
-  <ul>
-    <li>✅ $HSC Token Launch</li>
-    <li>✅ Raydium Listing</li>
-    <li>✅ Startapp + WebApp + GitHub Hosting Setup</li>
-    <li>✅ Telegram Game Bot Live</li>
-    <li>✅ Challenge Mode + Highscore GIFs</li>
-    <li>🕹 Fighting Game (Highscore Heroes)</li>
-    <li>🚧 Standalone Game App (TDLib)</li>
-    <li>🚧 Gamee & Naka API Integrations</li>
-    <li>🚧 Official Telegram Gaming Partner Application</li>
-    <li>🚧 Company Registration (BV)</li>
-    <li>🚧 PlayStation Partners & ID@Xbox Programs</li>
-    <li>🚧 Platform Testing & Optimization</li>  </ul>
-  </section>
-  
-  <section id="roadmap">
     <h2>Roadmap</h2>
     <ul>
+      <li>✅ $HSC Token Launch On Revshare</li>
+      <li>✅ Startapp + WebApp + GitHub Hosting Setup</li>
+      <li>✅ Challenge Mode + Highscore GIFs</li>
       <li>✅ Telegram Game Bot Live</li>
-      <li>✅ $HSC Token Launch</li>
-      <li>✅ Raydium Listing</li>
-      <li>🔜 Challenge Tournaments with bigger prizes</li>
-      <li>🔜 Game partnerships and ecosystem expansion</li>
+      <li>🕹 Make Our Own PVP Fighting Game (Highscore Heroes)</li>
+      <li>🚧 Standalone Game App (TDLib)</li>
+      <li>🚧 Gamee & Naka API Integrations</li>
+      <li>🚧 Official Telegram Gaming Partner Application</li>
+      <li>🚧 Company Registration (BV)</li>
+      <li>🚧 PlayStation Partners & ID@Xbox Programs</li>
+      <li>🚧 Platform Testing & Optimization</li>
     </ul>
   </section>
 
@@ -132,12 +140,41 @@
 
   <section id="chart">
     <h2>Live Chart</h2>
-    <p>Real-time chart powered by Raydium:</p>
+    <p>Real-time chart powered by Dexscreener:</p>
     <iframe src="https://dexscreener.com/solana/Cx3mTJTUf99BurRypA2u937e5eq4Vw7TsqkdpBDtmjZN"></iframe>
+  </section>
+
+  <section id="socials">
+    <h2>Socials</h2>
+    <div class="social-link">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" />
+      <a href="https://t.me/highscoresol" target="_blank">Telegram</a>
+    </div>
+    <div class="social-link">
+      <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" />
+      <a href="https://youtube.com/@highscoregaming-hsc?si=DHgbP2tGODxBuQLs" target="_blank">YouTube</a>
+    </div>
+    <div class="social-link">
+      <img src="https://cdn-icons-png.flaticon.com/512/3046/3046122.png" alt="TikTok" />
+      <a href="https://www.tiktok.com/@highscorebsc" target="_blank">TikTok</a>
+    </div>
+    <div class="social-link">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111589.png" alt="Reddit" />
+      <a href="https://reddit.com/r/HighScoreBsc" target="_blank">Reddit</a>
+    </div>
+    <div class="social-link">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="X" />
+      <a href="https://twitter.com/HighScoreHSC" target="_blank">X (Twitter)</a>
+    </div>
+    <div class="social-link">
+      <img src="https://revshare.dev/favicon.ico" alt="RevShare" />
+      <a href="https://revshare.dev/token/CLjRRmcxXxa6qrVMkqxTC9XvU8cc6r7orpoqB4kdfqRF" target="_blank">RevShare Listing</a>
+    </div>
   </section>
 
   <footer>
     &copy; 2025 Highscore Gaming. Powered by $HSC.
   </footer>
+
 </body>
 </html>
